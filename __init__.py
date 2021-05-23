@@ -12,6 +12,7 @@ def create_app(test_config=None):
         SECRET_KEY='dev',
         DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
     )
+    classifier = Classifier('emails.csv')
 
     if test_config is None:
         # load the instance config, if it exists, when not testing
@@ -40,7 +41,6 @@ def create_app(test_config=None):
     @app.route('/predict', methods=['GET', 'POST'])
     def predict():
         subject = session['previousEmail'] = request.form.get('subject')
-        classifier = Classifier('emails.csv')
         session['prediction'] = classifier.predictSpam([subject])
         return redirect('/')
 
