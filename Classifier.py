@@ -30,8 +30,9 @@ class Classifier:
 
     def predictSpam(self, emails: list) -> list:
         sampleVectorizer = self.vectorizer.transform(emails)
-        return self.NB_classifier.predict(sampleVectorizer)
+        result = self.NB_classifier.predict(sampleVectorizer)
+        return result.tolist()
 
 
-classifier = Classifier('emails.csv')
-classifier.testData('email_test.csv')
+# classifier = Classifier('emails.csv')
+# classifier.testData('email_test.csv')

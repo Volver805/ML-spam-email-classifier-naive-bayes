@@ -1,6 +1,8 @@
 import os
-
-from flask import Flask
+from Classifier import Classifier
+from flask import (
+    Flask, render_template, request, redirect, url_for, session
+)
 
 
 def create_app(test_config=None):
@@ -27,10 +29,19 @@ def create_app(test_config=None):
     # a simple page that says hello
     @app.route('/')
     def welcome():
-        return 'Welcome to my flask app'
+        prediction = session.get('prediction')
+        previousEmail = session.get('previousEmail')
+        session.clear()
+        return render_template('index.html',
+                               prediction=prediction,
+                               previousEmail=previousEmail
+                               )
 
-    @app.route('/hello')
-    def hello():
-        return 'Hello, World!'
+    @app.route('/predict', methods=['GET', 'POST'])
+    def predict():
+        subject = session['previousEmail'] = request.form.get('subject')
+        classifier = Classifier('emails.csv')
+        session['prediction'] = classifier.predictSpam([subject])
+        return redirect('/')
 
     return app

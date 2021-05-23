@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Email Spam Detector</title>
+        <style>
+            body {
+                padding:2% 5%;
+                font-family: CerebriSans-Bold, -apple-system, system-ui, Roboto, sans-serif;
+                background-color: ghostwhite;
+            }
+            h1 {
+                text-align: center;
+                color:#282828;
+            }
+            h4 {
+                color:dimgray;
+            }
+            article {
+                background-color: white;
+                padding:5%;
+                border-radius: 5px;
+                box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+            }
+            textarea {
+                resize: none;
+                width:100%;
+                border-radius: 4px;
+                border:1px solid rgba(86,86,86,0.47);
+                height: 180px;
+                padding: 10px;
+            }
+            button {
+                background-color: cornflowerblue;
+                border:0;
+                color:white;
+                font-weight: bold;
+                margin-top: 20px;
+                height:35px;
+                width:80px;
+                border-radius: 4px;
+                cursor: pointer;
+                transition: 0.2s ease-in-out background-color;
+            }
+            button:hover {
+                background-color: #64b7ed;
+            }
+            p {
+                font-weight: bold;
+            }
+            .ham {
+                color:forestgreen;
+            }
+            .spam {
+                color: #8b0000;
+            }
+        </style>
+    </head>
+    <body>
+        <article>
+            <h1>
+                Email spam detector 📧
+            </h1>
+            <hr>
+            <form method="post" action="predict">
+                <h4>
+                    Enter your email subject
+                </h4>
+                {% set subject = previousEmail if previousEmail else '' %}
+                <textarea id="subject" name="subject" value="{{ subject }}">{{ subject }}</textarea>
+                <button>
+                    Predict
+                </button>
+                {% if prediction != None %}
+                    <p id="prediction" class="{{ 'spam' if prediction[0] else 'ham' }}">
+                        {{ 'Spam 🚫' if prediction[0] else 'This email is valid 👍' }}
+                    </p>
+                {% endif %}
+            </form>
+        </article>
+    </body>
+</html>
