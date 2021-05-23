@@ -4,34 +4,34 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.naive_bayes import MultinomialNB
 
 
-spam_df = pd.read_csv("emails.csv")
-ham_emails = spam_df[spam_df['spam'] == 0]
-spam_emails = spam = spam_df[spam_df['spam'] == 1]
+class Classifier:
+    def __init__(self, train_data_file: str):
+        spam_df = pd.read_csv(train_data_file)
 
-# By vectorization the email text we mean that we convert each word and text into tokens with their value and the count
-# of their occurrence
-vectorizer = CountVectorizer()
-countVectorizer = vectorizer.fit_transform(spam_df['text'])
+        # By vectorization the email text we mean that we convert each word and
+        # text into tokens with their value and the count of their occurrence
+        self.vectorizer = CountVectorizer()
+        countVectorizer = self.vectorizer.fit_transform(spam_df['text'])
 
-NB_classifier = MultinomialNB()
-label = spam_df['spam'].values
-NB_classifier.fit(countVectorizer, label)  # train
+        self.NB_classifier = MultinomialNB()
+        label = spam_df['spam'].values
+        self.NB_classifier.fit(countVectorizer, label)  # train
 
-spam_test = pd.read_csv('email_test.csv')
+    def testData(self, test_data_file: str):
+        spam_test = pd.read_csv(test_data_file)
+        x = self.vectorizer.transform(spam_test['text'])
+        y = spam_test['spam'].values
+        y_predict_test = self.NB_classifier.predict(x)
+        print(classification_report(y, y_predict_test))
+        # cm = confusion_matrix(y, y_predict_test)
+        # specificity = cm[1, 1] / (cm[1, 0] + cm[1, 1])
+        # accuracy = (cm[0, 0] + cm[1, 1]) / sum(sum(cm))
+        # precision = cm[0, 0] / (cm[0, 0] + cm[1, 1])
 
-x = vectorizer.transform(spam_test['text'])
-y = spam_test['spam'].values
-y_predict_test = NB_classifier.predict(x)
-cm = confusion_matrix(y, y_predict_test)
-specificity = cm[1, 1] / (cm[1, 0] + cm[1, 1])
-accuracy = (cm[0, 0] + cm[1, 1]) / sum(sum(cm))
-precision = cm[0, 0] / (cm[0, 0] + cm[1, 1])
-print(f'Specificity : {specificity}\nAccuracy : {accuracy}\nPrecision : {precision}')
-print(classification_report(y, y_predict_test))
-
-
-def predictSpam(emails: list) -> list:
-    sampleVectorizer = vectorizer.transform(emails)
-    return NB_classifier.predict(sampleVectorizer)
+    def predictSpam(self, emails: list) -> list:
+        sampleVectorizer = self.vectorizer.transform(emails)
+        return self.NB_classifier.predict(sampleVectorizer)
 
 
+classifier = Classifier('emails.csv')
+classifier.testData('email_test.csv')
