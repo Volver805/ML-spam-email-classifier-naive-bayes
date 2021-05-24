@@ -23,11 +23,12 @@ class Classifier:
         y = spam_test['spam'].values
         y_predict_test = self.NB_classifier.predict(x)
         print(classification_report(y, y_predict_test))
+        
         # cm = confusion_matrix(y, y_predict_test)
-        # specificity = cm[1, 1] / (cm[1, 0] + cm[1, 1])
-        # accuracy = (cm[0, 0] + cm[1, 1]) / sum(sum(cm))
-        # precision = cm[0, 0] / (cm[0, 0] + cm[1, 1])
-
+        # specificity = cm[1, 1] / (cm[1, 0] + cm[1, 1])#TN/TN+FP
+        # accuracy = (cm[0, 0] + cm[1, 1]) / sum(sum(cm))#TP+TN/TP+TN+FP+FN
+        # precision = cm[0, 0] / (cm[0, 0] + cm[1, 1])#TP/(TP+FP)
+        # recall=cm[0,0]/(cm[0,0]+cm[0,1]) #TP/(TP+TN)
     def predictSpam(self, emails: list) -> list:
         sampleVectorizer = self.vectorizer.transform(emails)
         result = self.NB_classifier.predict(sampleVectorizer)
