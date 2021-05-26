@@ -2,6 +2,7 @@ import pandas as pd
 from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.naive_bayes import MultinomialNB
+from sklearn.model_selection import train_test_split
 
 
 class Classifier:
@@ -15,6 +16,7 @@ class Classifier:
 
         self.NB_classifier = MultinomialNB()
         label = spam_df['spam'].values
+        
         self.NB_classifier.fit(countVectorizer, label)  # train
 
     def testData(self, test_data_file: str):
@@ -33,7 +35,17 @@ class Classifier:
         sampleVectorizer = self.vectorizer.transform(emails)
         result = self.NB_classifier.predict(sampleVectorizer)
         return result.tolist()
+    
+    def crossValidation(self, data):
+      # Split data into 3 samples
+      samples = [data[:2000], data[2000:4000], data[4000:]]
+      for sample in samples:
+        x = self.vectorizer.transform(sample['text'])
+        y = sample['spam'].values
+        y_predict_test = self.NB_classifier.predict(x)
+        print(classification_report(y, y_predict_test))
+      
 
 
-# classifier = Classifier('emails.csv')
-# classifier.testData('email_test.csv')
+classifier = Classifier('emails.csv')
+classifier.testData('email_test.csv')
